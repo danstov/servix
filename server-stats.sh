@@ -10,6 +10,7 @@ OUTPUT_LOG=~/sys-log.txt
   U="\e[4m" #underline
   Y="\e[33m" #yellow
   RED="\e[1;31m" #light red
+  W="\033[97m" #white
 
 #  Format Date and Time
 
@@ -56,11 +57,12 @@ DISK_USED=$(df -h / | awk '{c = $3} END {print c}')
 TOP_5_CPU=$(ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6 | column -t)
 
 function print_top_5_cpu_table() {
-    local count=0
+    local count
     mapfile -t CPU_LINES <<< "$TOP_5_CPU"
-    echo -e "$R"TOP 5 CPU PROC.:"$R"'\t|\t'"$Y"
+    echo -e "${R}TOP 5 MEM. PROC.:${R}\t${W}|${R}"
     for ((count=0; count<${#CPU_LINES[@]}; count++)); do
-        printf "\t\t\t|\t%s\n" "${CPU_LINES[count]}"
+        printf "\t\t\t%b|%b\t%b%s%b\n" \
+            "$W" "$R" "$Y" "${CPU_LINES[count]}" "$R"
     done
 }
 
@@ -69,11 +71,12 @@ function print_top_5_cpu_table() {
 TOP_5_MEMORY=$(ps -eo pid,user,comm,%mem --sort=-%mem | head -6 | column -t)
 
 function print_top_5_mem_table() {
-    local count=0
+    local count
     mapfile -t MEMORY_LINES <<< "$TOP_5_MEMORY"
-    echo -e "${R}TOP 5 MEM. PROC.:${R}\t|\t""$Y"
+    echo -e "${R}TOP 5 MEM. PROC.:${R}\t${W}|${R}"
     for ((count=0; count<${#MEMORY_LINES[@]}; count++)); do
-        printf "\t\t\t|\t%s\n" "${MEMORY_LINES[count]}"
+        printf "\t\t\t%b|%b\t%b%s%b\n" \
+            "$W" "$R" "$Y" "${MEMORY_LINES[count]}" "$R"
     done
 }
 
